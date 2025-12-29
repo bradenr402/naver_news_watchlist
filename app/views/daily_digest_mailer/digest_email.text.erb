@@ -1,0 +1,18 @@
+<%= @title %>
+<% @sections.each_with_index do |section, index| %>
+<%= "\n\n---\n\n" if index.positive? %>
+<%= results_count = section[:items].size %> results for "<%= section[:query] %>"<%= results_count.positive? ? ':' : '.' %>
+
+<% if section[:items].any? %>
+<% section[:items].each do |item| %>
+<%= item[:position] %>) "<%= item[:title] %>"
+    Date:    <%= item[:news_date] %>
+    Link:    <%= item[:link] %>
+    <% if item[:press_name].present? || item[:press_link].present? %>
+    Source:  <%= item[:press_name].presence %><%= item[:press_link].present? ? " (#{item[:press_link]})" : "" %>
+    <% end %>
+    <%= item[:snippet].present? ? "Snippet: #{item[:snippet]}" : "" %>
+
+<% end %>
+<% end %>
+<% end %>
