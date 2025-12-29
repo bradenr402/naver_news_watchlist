@@ -1,5 +1,5 @@
 class NaverNewsFetcher
-  def initialize(query:, sort_by: 1, period: "1d", device: "desktop")
+  def initialize(query:, sort_by: 0, period: "1d", device: "desktop")
     @query = query
     @period = period
     @sort_by = sort_by
