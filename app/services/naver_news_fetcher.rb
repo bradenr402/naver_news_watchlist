@@ -6,10 +6,10 @@ class NaverNewsFetcher
     @device = device
   end
 
-  def call
+  def call(page: 1)
     client = SerpApi::Client.new(api_key: serpapi_key)
 
-    result = fetch_news client
+    result = fetch_news(client, page:)
 
     status = result.dig(:search_metadata, :status)
     return result if status == "Success"
@@ -27,7 +27,7 @@ class NaverNewsFetcher
     Rails.application.credentials.dig(:serpapi, :api_key)
   end
 
-  def fetch_news(client)
+  def fetch_news(client, page:)
     client.search(
       engine: "naver",
       query: @query,
@@ -35,6 +35,7 @@ class NaverNewsFetcher
       period: @period,
       sort_by: @sort_by,
       device: @device,
+      page:,
     )
   end
 

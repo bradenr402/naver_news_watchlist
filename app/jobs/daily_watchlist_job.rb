@@ -3,6 +3,9 @@ class DailyWatchlistJob < ApplicationJob
 
   queue_as :default
 
+  RESULTS_PER_PAGE = 10
+  MAX_PAGES = 5
+
   WATCHLIST = [
     {
       # Brand / product monitoring
@@ -57,33 +60,44 @@ class DailyWatchlistJob < ApplicationJob
   end
 
   def fetch_and_select(item)
-    api = NaverNewsFetcher.new(query: item[:query]).call
-    results = api[:news_results].to_a
-
     seen = {}
     selected = []
 
-    results.each do |result|
-      break if selected.size >= item[:max]
+    limit = item[:max] || Float::INFINITY
+    page = 1
 
-      link = result[:link].to_s
-      next if link.empty? || seen[link]
+    while selected.size < limit && page <= MAX_PAGES
+      options = item.except(:max, :press_names)
 
-      press_name = result.dig(:news_info, :press_name).to_s
+      api = NaverNewsFetcher.new(**options).call(page:)
+      results = api[:news_results].to_a
 
-      next unless item[:press_names].empty? || press_name.in?(item[:press_names])
+      break if results.empty?
 
-      seen[link] = true
+      results.each do |result|
+        break if selected.size >= limit
 
-      selected << {
-        position: result[:position].to_i,
-        title: result[:title].to_s,
-        snippet: result[:snippet].to_s,
-        link:,
-        news_date: result.dig(:news_info, :news_date).to_s,
-        press_name:,
-        press_link: result.dig(:news_info, :press_link).to_s
-      }.compact
+        link = result[:link].to_s
+        next if link.empty? || seen[link]
+
+        press_name = result.dig(:news_info, :press_name).to_s
+
+        next unless item[:press_names].empty? || press_name.in?(item[:press_names])
+
+        seen[link] = true
+
+        selected << {
+          position: result[:position].to_i + (page - 1) * RESULTS_PER_PAGE,
+          title: result[:title].to_s,
+          snippet: result[:snippet].to_s,
+          link:,
+          news_date: result.dig(:news_info, :news_date).to_s,
+          press_name:,
+          press_link: result.dig(:news_info, :press_link).to_s
+        }.compact
+      end
+
+      page += 1
     end
 
     selected
