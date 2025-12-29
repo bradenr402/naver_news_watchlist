@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
-  layout "mailer"
+  default from: "Naver Watchlist <#{Rails.application.credentials.dig(:smtp, :user_name)}>"
+  layout false
 end
