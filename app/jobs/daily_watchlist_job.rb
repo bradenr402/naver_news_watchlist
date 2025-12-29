@@ -6,32 +6,74 @@ class DailyWatchlistJob < ApplicationJob
   RESULTS_PER_PAGE = 10
   MAX_PAGES = 5
 
+  SORT_MAP = {
+    relevance: 0,
+    latest: 1,
+    oldest: 2
+  }
+
+  PERIOD_MAP = {
+    "all" => "all time", # default
+    "1h"  => "1 hour",
+    "2h"  => "2 hours",
+    "3h"  => "3 hours",
+    "4h"  => "4 hours",
+    "5h"  => "5 hours",
+    "6h"  => "6 hours",
+    "1d"  => "1 day",
+    "1w"  => "1 week",
+    "1m"  => "1 month",
+    "3m"  => "3 months",
+    "6m"  => "6 months",
+    "1y"  => "1 year"
+  }.with_indifferent_access.freeze
+
   WATCHLIST = [
     {
-      # Brand / product monitoring
-      query: "Bonanza Coffee",
+      # Industry trends
+      query: "coffee",
       press_names: [
         "매일경제",   # Maeil Business Newspaper
         "한국경제",   # Korea Economic Daily
         "조선비즈"    # Chosun Biz
       ],
-      max: 10
+      max: 5,
+      sort_by: SORT_MAP[:latest],
+      period: "1w"
     },
     {
-      # Company / AI roadmap monitoring
+      # Company news
       query: "Naver AI",
       press_names: [], # allow all press sources
-      max: 5
+      max: 15 # uses pagination to get 2 pages
     },
     {
       # Competitor monitoring
       query: "Kakao Enterprise",
       press_names: [],
-      max: 10
+      max: 25,
+      sort_by: SORT_MAP[:latest],
+      period: "1m",
+      device: "tablet"
+    },
+    {
+      # Technology updates
+      query: "AI semiconductor",
+      press_names: [],
+      max: 10,
+      sort_by: SORT_MAP[:latest],
+      period: "3m"
+    },
+    {
+      # Fresh breaking news across AI ecosystem
+      query: "Generative AI",
+      press_names: [],
+      max: 10,
+      sort_by: SORT_MAP[:latest],
+      period: "3h",
+      device: "mobile"
     }
   ]
-
-  # TODO: use pagination to fetch more than 10 results if needed
 
   def perform
     sections = WATCHLIST.map { |item| build_section(item) }
@@ -45,7 +87,7 @@ class DailyWatchlistJob < ApplicationJob
 
   def build_section(item)
     {
-      query: item[:query],
+      **item.except(:max, :press_names),
       items: fetch_and_select(item)
     }
   end
