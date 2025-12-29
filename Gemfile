@@ -42,3 +42,5 @@ group :development, :test do
 end
 
 gem "serpapi", "~> 1.0"
+
+gem "letter_opener", "~> 1.10", group: :development
