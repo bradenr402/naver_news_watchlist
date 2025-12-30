@@ -8,7 +8,7 @@
     "Backtrace:"
   ]
 
-  backtrace_lines = @error_backtrace.map { it.prepend "  " }
+  backtrace_lines = @error_backtrace.map { "  #{it}" }
 
   body = (lines + backtrace_lines).join("\n")
 %>
