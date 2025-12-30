@@ -79,6 +79,26 @@ class DailyWatchlistJob < ApplicationJob
     sections = empty_sections if sections.all? { |section| section[:items].empty? }
 
     post_digest sections
+  rescue => e
+    Rails.error.report(
+      e,
+      handled: false,
+      severity: :error,
+      context: {
+        job: self.class.name,
+        watchlist_queries: WATCHLIST.pluck(:query),
+        recipients: RECIPIENT_EMAILS
+       }
+    )
+
+    error_payload = {
+      class: e.class.name,
+      message: e.message,
+      backtrace: e.backtrace
+    }
+
+    DailyDigestMailer.error_email(RECIPIENT_EMAILS, error_payload).deliver_later
+    raise
   end
 
   def sections_for_watchlist
@@ -114,6 +134,8 @@ class DailyWatchlistJob < ApplicationJob
       options = item.without(:max, :press_names)
 
       api = NaverNewsFetcher.new(**options).call(page:)
+      ensure_serpapi_success! api, options[:query], page
+
       results = api[:news_results].to_a
       break if results.empty?
 
@@ -144,6 +166,33 @@ class DailyWatchlistJob < ApplicationJob
     end
 
     selected
+  end
+
+  def ensure_serpapi_success!(api_response, query, page)
+    status = api_response.dig(:search_metadata, :status)
+    return if status == "Success"
+
+    error_message = api_response[:error] || "Unknown SerpApi error"
+
+    error = StandardError.new(
+      "SerpApi Naver search failed (query=#{query.inspect}, page=#{page}): " \
+      "status=#{status || 'unknown'} error=#{error_message}"
+    )
+
+    Rails.error.report(
+      error,
+      handled: false,
+      severity: :error,
+      context: {
+        source: "SerpApi:NaverNews",
+        query:,
+        page:,
+        serpapi_status: status,
+        serpapi_error_message: error_message
+      }
+    )
+
+    raise error
   end
 
   def post_digest(sections)

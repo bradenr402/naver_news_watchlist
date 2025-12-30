@@ -1,0 +1,16 @@
+<%= @title %>
+
+<%
+  lines = [
+    "Time: #{@error_time}",
+    "Error: #{@error_class} - #{@error_message}",
+    "",
+    "Backtrace:"
+  ]
+
+  backtrace_lines = @error_backtrace.map { it.prepend "  " }
+
+  body = (lines + backtrace_lines).join("\n")
+%>
+
+<%= body %>

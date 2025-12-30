@@ -13,6 +13,18 @@ class NaverNewsFetcher
     client = SerpApi::Client.new(api_key: serpapi_key)
 
     fetch_news(client, page:)
+  rescue => e
+    Rails.error.report(
+      e,
+      handled: false,
+      severity: :error,
+      context: {
+        source: "SerpApi:NaverNews",
+        page:,
+        **@base_params.without(:engine, :where)
+      }.compact
+    )
+    raise
   end
 
   private
