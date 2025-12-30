@@ -14,6 +14,9 @@ class NaverNewsFetcher
 
     fetch_news(client, page:)
   rescue => e
+    # Ignore "no results" errors
+    return empty_payload if e.message.include? "Naver hasn't returned any results for this query"
+
     Rails.error.report(
       e,
       handled: false,
@@ -31,6 +34,15 @@ class NaverNewsFetcher
 
   def serpapi_key
     Rails.application.credentials.dig(:serpapi, :api_key)
+  end
+
+  def empty_payload
+    {
+      search_metadata: {
+        status: "Success"
+      },
+      news_results: []
+    }
   end
 
   def fetch_news(client, page:)
