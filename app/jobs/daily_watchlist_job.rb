@@ -133,10 +133,10 @@ class DailyWatchlistJob < ApplicationJob
     while selected.size < limit && page <= MAX_PAGES
       options = item.without(:max, :press_names)
 
-      api = NaverNewsFetcher.new(**options).call(page:)
-      ensure_serpapi_success! api, options[:query], page
+      api_response = NaverNewsFetcher.new(**options).call(page:)
+      ensure_serpapi_success! api_response, options[:query], page
 
-      results = api[:news_results].to_a
+      results = api_response[:news_results].to_a
       break if results.empty?
 
       results.each do |result|
@@ -145,11 +145,10 @@ class DailyWatchlistJob < ApplicationJob
         link = result[:link].to_s
         next if link.blank? || link.in?(seen)
 
-        press_name = result.dig(:news_info, :press_name).to_s
-
-        next unless item[:press_names].empty? || press_name.in?(item[:press_names])
-
         seen << link
+
+        press_name = result.dig(:news_info, :press_name).to_s
+        next unless item[:press_names].empty? || press_name.in?(item[:press_names])
 
         selected << {
           position: result[:position].to_i + (page - 1) * RESULTS_PER_PAGE,
@@ -173,7 +172,6 @@ class DailyWatchlistJob < ApplicationJob
     return if status == "Success"
 
     error_message = api_response[:error] || "Unknown SerpApi error"
-
     error = StandardError.new(
       "SerpApi Naver search failed (query=#{query.inspect}, page=#{page}): " \
       "status=#{status || 'unknown'} error=#{error_message}"
