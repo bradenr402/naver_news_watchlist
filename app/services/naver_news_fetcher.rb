@@ -13,12 +13,12 @@ class NaverNewsFetcher
     client = SerpApi::Client.new(api_key: serpapi_key)
 
     fetch_news(client, page:)
-  rescue => e
+  rescue => error
     # Ignore "no results" errors
-    return empty_payload if e.message.include? "Naver hasn't returned any results for this query"
+    return empty_payload if error.message.include? "Naver hasn't returned any results for this query"
 
     Rails.error.report(
-      e,
+      error,
       handled: false,
       severity: :error,
       context: {
@@ -27,7 +27,7 @@ class NaverNewsFetcher
         **@base_params.without(:engine, :where)
       }.compact
     )
-    raise
+    raise error
   end
 
   private

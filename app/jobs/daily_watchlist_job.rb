@@ -79,9 +79,9 @@ class DailyWatchlistJob < ApplicationJob
     sections = empty_sections if sections.all? { |section| section[:items].empty? }
 
     post_digest sections
-  rescue => e
+  rescue => error
     Rails.error.report(
-      e,
+      error,
       handled: false,
       severity: :error,
       context: {
@@ -92,13 +92,13 @@ class DailyWatchlistJob < ApplicationJob
     )
 
     error_payload = {
-      class: e.class.name,
-      message: e.message,
-      backtrace: e.backtrace
+      class: error.class.name,
+      message: error.message,
+      backtrace: error.backtrace
     }
 
     DailyDigestMailer.error_email(RECIPIENT_EMAILS, error_payload).deliver_later
-    raise
+    raise error
   end
 
   def sections_for_watchlist
