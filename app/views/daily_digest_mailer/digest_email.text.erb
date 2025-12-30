@@ -9,7 +9,11 @@
   period = DailyWatchlistJob::PERIOD_MAP[section.fetch(:period, "1d")]
 
   section_title = "#{pluralize results_count, 'result'} for \"#{section[:query]}\""
-  section_details = { device:, sort:, period: }.map { it.join(': ') }.join(', ').prepend(' (').concat(')')
+  section_details = { device:, sort:, period: }.map { it.join(': ') }
+
+  section_details << "filtered by press: #{section[:press_names].join(', ')}" if section[:press_names].present? 
+
+  section_details = section_details.join(", ").prepend(' (').concat(')')
 
   punctuation = results_count.zero? ? "." : ":"
 

@@ -87,7 +87,7 @@ class DailyWatchlistJob < ApplicationJob
 
   def build_section(item)
     {
-      **item.except(:max, :press_names),
+      **item.except(:max),
       items: fetch_and_select(item)
     }
   end
