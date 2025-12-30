@@ -36,7 +36,7 @@ class DailyWatchlistJob < ApplicationJob
         "한국경제",   # Korea Economic Daily
         "조선비즈"    # Chosun Biz
       ],
-      max: 5,
+      max: Float::INFINITY, # only limited by MAX_PAGES
       sort_by: SORT_MAP[:latest],
       period: "1w"
     },
