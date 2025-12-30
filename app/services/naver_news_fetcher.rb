@@ -3,9 +3,9 @@ class NaverNewsFetcher
     @base_params = {
       engine: "naver",
       where: "news",
-      query: query,
-      sort_by: sort_by,
-      period: period
+      query:,
+      sort_by:,
+      period:
     }.merge(options)
   end
 
