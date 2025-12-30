@@ -1,9 +1,12 @@
 class NaverNewsFetcher
-  def initialize(query:, sort_by: 0, period: "1d", device: "desktop")
-    @query = query
-    @period = period
-    @sort_by = sort_by
-    @device = device
+  def initialize(query:, sort_by: 0, period: "1d", **options)
+    @base_params = {
+      engine: "naver",
+      where: "news",
+      query: query,
+      sort_by: sort_by,
+      period: period
+    }.merge(options)
   end
 
   def call(page: 1)
@@ -28,15 +31,7 @@ class NaverNewsFetcher
   end
 
   def fetch_news(client, page:)
-    client.search(
-      engine: "naver",
-      query: @query,
-      where: "news",
-      period: @period,
-      sort_by: @sort_by,
-      device: @device,
-      page:,
-    )
+    client.search(**@base_params, page:)
   end
 
   def empty_payload
