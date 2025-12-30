@@ -1,7 +1,7 @@
 class DailyDigestMailer < ApplicationMailer
   def digest_email(recipient_email, sections)
     @sections = sections
-    @digest_date = Time.zone.today.strftime("%Y-%m-%d")
+    @digest_date = Time.zone.today.strftime("%F")
     @title = "Naver News Watchlist Digest — #{@digest_date}"
 
     mail(
@@ -16,7 +16,7 @@ class DailyDigestMailer < ApplicationMailer
     @error_message = error_payload[:message]
     @error_backtrace = Array(error_payload[:backtrace])
 
-    @error_time = Time.zone.now.strftime("%Y-%m-%d %H:%M %Z")
+    @error_time = Time.zone.now.strftime("%F %R %Z")
     @title = "Naver News Watchlist Error — #{@error_time}"
 
     mail(
