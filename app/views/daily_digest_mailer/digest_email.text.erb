@@ -1,4 +1,4 @@
-<%= @title %>
+<%= @title %> (<%= pluralize(@sections.sum { it[:items].size }, "result") %>)
 
 <% sections_list = @sections.map do |section|
   items         = section[:items]
