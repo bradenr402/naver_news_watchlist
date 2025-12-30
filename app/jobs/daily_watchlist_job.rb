@@ -1,6 +1,4 @@
 class DailyWatchlistJob < ApplicationJob
-  include ActionView::Helpers::TextHelper # For truncate method
-
   queue_as :default
 
   RESULTS_PER_PAGE = 10
@@ -77,7 +75,6 @@ class DailyWatchlistJob < ApplicationJob
 
   def perform
     sections = WATCHLIST.map { |item| build_section(item) }
-
     sections = empty_sections if sections.all? { |section| section[:items].empty? }
 
     post_digest sections
