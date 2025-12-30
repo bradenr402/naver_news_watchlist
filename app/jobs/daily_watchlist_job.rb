@@ -75,10 +75,14 @@ class DailyWatchlistJob < ApplicationJob
   ]
 
   def perform
-    sections = WATCHLIST.map { |item| build_section(item) }
+    sections = sections_for_watchlist
     sections = empty_sections if sections.all? { |section| section[:items].empty? }
 
     post_digest sections
+  end
+
+  def sections_for_watchlist
+    WATCHLIST.map { |item| build_section(item) }
   end
 
   private
