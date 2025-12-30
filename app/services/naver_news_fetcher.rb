@@ -22,7 +22,7 @@ class NaverNewsFetcher
       handled: false,
       severity: :error,
       context: {
-        source: "SerpApi:NaverNews",
+        source: self.class.name,
         page:,
         **@base_params.without(:engine, :where)
       }.compact
