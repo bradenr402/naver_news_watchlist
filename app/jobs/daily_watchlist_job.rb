@@ -1,6 +1,7 @@
 class DailyWatchlistJob < ApplicationJob
   queue_as :default
 
+  RECIPIENT_EMAILS = [ "you@example.com", "another@example.com" ] # replace with desired emails
   RESULTS_PER_PAGE = 10
   MAX_PAGES = 5
 
@@ -143,7 +144,6 @@ class DailyWatchlistJob < ApplicationJob
   end
 
   def post_digest(sections)
-    recipient = "you@example.com" # replace with desired email
-    DailyDigestMailer.digest_email(recipient, sections).deliver_later
+    RECIPIENT_EMAILS.each { |email| DailyDigestMailer.digest_email(email, sections).deliver_later }
   end
 end
