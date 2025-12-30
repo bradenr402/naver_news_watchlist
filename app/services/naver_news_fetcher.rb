@@ -38,9 +38,7 @@ class NaverNewsFetcher
 
   def empty_payload
     {
-      search_metadata: {
-        status: "Success"
-      },
+      search_metadata: { status: "Success" },
       news_results: []
     }
   end
