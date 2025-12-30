@@ -1,11 +1,11 @@
 class NaverNewsFetcher
-  def initialize(query:, sort_by: 0, period: "1d", **options)
+  def initialize(query:, **options)
     @base_params = {
       engine: "naver",
       where: "news",
       query:,
-      sort_by:,
-      period:
+      sort_by: 0,
+      period: "1d"
     }.merge(options)
   end
 
