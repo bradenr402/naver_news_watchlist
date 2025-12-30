@@ -25,7 +25,7 @@ class DailyWatchlistJob < ApplicationJob
     "3m"  => "3 months",
     "6m"  => "6 months",
     "1y"  => "1 year"
-  }.with_indifferent_access.freeze
+  }.freeze
 
   WATCHLIST = [
     {
@@ -89,7 +89,7 @@ class DailyWatchlistJob < ApplicationJob
 
   def build_section(item)
     {
-      **item.except(:max),
+      **item.without(:max),
       items: fetch_and_select(item)
     }
   end
@@ -104,31 +104,30 @@ class DailyWatchlistJob < ApplicationJob
   end
 
   def fetch_and_select(item)
-    seen = {}
+    seen = []
     selected = []
 
     limit = item[:max] || Float::INFINITY
     page = 1
 
     while selected.size < limit && page <= MAX_PAGES
-      options = item.except(:max, :press_names)
+      options = item.without(:max, :press_names)
 
       api = NaverNewsFetcher.new(**options).call(page:)
       results = api[:news_results].to_a
-
       break if results.empty?
 
       results.each do |result|
         break if selected.size >= limit
 
         link = result[:link].to_s
-        next if link.empty? || seen[link]
+        next if link.blank? || link.in?(seen)
 
         press_name = result.dig(:news_info, :press_name).to_s
 
         next unless item[:press_names].empty? || press_name.in?(item[:press_names])
 
-        seen[link] = true
+        seen << link
 
         selected << {
           position: result[:position].to_i + (page - 1) * RESULTS_PER_PAGE,
@@ -148,6 +147,6 @@ class DailyWatchlistJob < ApplicationJob
   end
 
   def post_digest(sections)
-    RECIPIENT_EMAILS.each { |email| DailyDigestMailer.digest_email(email, sections).deliver_later }
+    DailyDigestMailer.digest_email(RECIPIENT_EMAILS, sections).deliver_later
   end
 end
