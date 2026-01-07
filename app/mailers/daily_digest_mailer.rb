@@ -1,8 +1,9 @@
 class DailyDigestMailer < ApplicationMailer
   def digest_email(recipient_email, sections)
     @sections = sections
-    @digest_date = Time.zone.today.strftime("%F")
-    @title = "Naver News Watchlist Digest — #{@digest_date}"
+
+    digest_date = Time.zone.today.strftime("%F")
+    @title = "Naver News Watchlist Digest — #{digest_date}"
 
     mail(
       to: recipient_email,
