@@ -8,7 +8,20 @@
 
   device = section.fetch(:device, "desktop")
   sort   = DailyWatchlistJob::SORT_MAP.key(section.fetch(:sort_by, 0)).to_s.titleize
-  period = DailyWatchlistJob::PERIOD_MAP[section.fetch(:period, "1d")]
+
+  period = section.fetch(:period, "1d")
+
+  period = if (match = period.match(/from(\d{8})to(\d{8})/))
+    begin
+      from_date, to_date = match.captures.map(&:to_date)
+      "from #{from_date} to #{to_date}"
+    rescue Date::Error
+      'unknown period'
+    end
+  else
+    DailyWatchlistJob::PERIOD_MAP.fetch(period, 'unknown period')
+  end
+
   filtered_by_press = section[:press_names]&.join(', ')
 
   meta_parts = { device:, sort:, period:, filtered_by_press: }.compact_blank.map { |key, value| "#{key.to_s.humanize}: #{value}" }
