@@ -18,8 +18,7 @@ class NaverNewsFetcher
 
   def call(page: 1)
     client = SerpApi::Client.new(api_key: serpapi_key)
-
-    fetch_news(client, page:)
+    client.search(page:, **base_params)
   rescue => error
     # Ignore "no results" errors
     return empty_payload if error.message.include? "Naver hasn't returned any results for this query"
@@ -48,9 +47,5 @@ class NaverNewsFetcher
       search_metadata: { status: "Success" },
       news_results: []
     }
-  end
-
-  def fetch_news(client, page:)
-    client.search(**base_params, page:)
   end
 end
