@@ -1,52 +1,5 @@
 <%= @title %> (<%= pluralize(@sections.sum { it[:items].size }, "result") %>)
 
-<% sections_list = @sections.map do |section|
-  items         = section[:items]
-  results_count = items.size
+<% sections_list = @sections.map { DailyDigestSectionFormatter.call(_1) } %>
 
-  section_title = "#{pluralize results_count, 'result'} for \"#{section[:query]}\""
-
-  device = section.fetch(:device, "desktop")
-  sort   = DailyWatchlistJob::SORT_MAP.key(section.fetch(:sort_by, 0)).to_s.titleize
-
-  period = section.fetch(:period, "1d")
-
-  period = if (match = period.match(/from(\d{8})to(\d{8})/))
-    begin
-      from_date, to_date = match.captures.map(&:to_date)
-      "from #{from_date} to #{to_date}"
-    rescue Date::Error
-      'unknown period'
-    end
-  else
-    DailyWatchlistJob::PERIOD_MAP.fetch(period, 'unknown period')
-  end
-
-  filtered_by_press = section[:press_names]&.join(', ')
-
-  meta_parts = { device:, sort:, period:, filtered_by_press: }.compact_blank.map { |key, value| "#{key.to_s.humanize}: #{value}" }
-  section_details = " (#{meta_parts.join(", ")})"
-
-  punctuation = results_count.zero? ? "." : ":"
-
-  header = [ section_title, section_details, punctuation ].join
-
-  body = items.map do |item|
-    [
-      "  #{item[:position]}) \"#{item[:title]}\"",
-      "    Date:    #{item[:news_date]}",
-      "    Link:    #{item[:link]}",
-      (
-        "    Source:  #{[
-          item[:press_name].presence,
-          item[:press_link].present? ? " (#{item[:press_link]})" : nil
-        ].compact.join}" if item[:press_name].present? || item[:press_link].present?
-      ),
-      ("    Snippet: \"#{item[:snippet]}\"" if item[:snippet].present?)
-    ].compact.join("\n")
-  end.join("\n\n")
-
-  [ header, body ].join("\n\n")
-end %>
-
-<%= sections_list.join("\n\n\n---\n\n\n") %>
+<%= sections_list.join(DailyDigestSectionFormatter::SECTION_SEPARATOR) %>
