@@ -34,23 +34,24 @@ class DailyWatchlistJob < ApplicationJob
       press_names: [
         "매일경제",   # Maeil Business Newspaper
         "한국경제",   # Korea Economic Daily
-        "조선비즈"    # Chosun Biz
-      ],
-      max: Float::INFINITY, # only limited by MAX_PAGES
-      sort_by: SORT_MAP[:latest],
-      period: "1w"
+        "조선비즈",   # Chosun Biz
+        "토큰포스트"  # TokenPost
+      ], # filter by specific press sources
+      max: Float::INFINITY, # set max to Float::INFINITY to allow unlimited results up to MAX_PAGES
+      sort_by: SORT_MAP[:latest], # sort by latest news
+      period: "from20251201to20260107" # custom date range
     },
     {
-      # Company news
+      # Topical news
       query: "Naver AI",
-      press_names: [], # allow all press sources
-      max: 15 # uses pagination to get 2 pages
+      press_names: [], # set press_names to `[]` to allow all press sources
+      max: RESULTS_PER_PAGE # set max to RESULTS_PER_PAGE to fetch only the first page
     },
     {
       # Competitor monitoring
       query: "Kakao Enterprise",
-      press_names: [],
-      max: 25,
+      press_names: nil, # set press_names to `nil` to allow all press sources
+      max: RESULTS_PER_PAGE * 2, # set max greater than RESULTS_PER_PAGE to fetch multiple pages
       sort_by: SORT_MAP[:latest],
       period: "1m",
       device: "tablet"
@@ -58,19 +59,18 @@ class DailyWatchlistJob < ApplicationJob
     {
       # Technology updates
       query: "AI semiconductor",
-      press_names: [],
-      max: 10,
+      # omit press_names to allow all press sources
+      # omit max to allow unlimited results up to MAX_PAGES
       sort_by: SORT_MAP[:latest],
       period: "3m"
     },
     {
-      # Fresh breaking news across AI ecosystem
+      # Fresh breaking news with a shorter time frame
       query: "Generative AI",
-      press_names: [],
-      max: 10,
+      max: nil, # set max to `nil` to allow unlimited results up to MAX_PAGES
       sort_by: SORT_MAP[:latest],
       period: "3h",
-      device: "mobile"
+      device: "mobile" # simulate mobile device results
     }
   ]
 
@@ -148,7 +148,7 @@ class DailyWatchlistJob < ApplicationJob
         seen << link
 
         press_name = result.dig(:news_info, :press_name).to_s
-        next unless item[:press_names].empty? || press_name.in?(item[:press_names])
+        next unless item[:press_names].blank? || press_name.in?(item[:press_names])
 
         selected << {
           position: result[:position].to_i + (page - 1) * RESULTS_PER_PAGE,
