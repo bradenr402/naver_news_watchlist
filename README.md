@@ -1,8 +1,7 @@
 # API‑only Ruby on Rails Naver News Watchlist
 
-This repository contains the source code used in the SerpApi blog post [Building an API‑only Ruby on Rails Naver News Watchlist](https://example.com/blog/naver-news-watchlist). <!-- TODO: Update with actual link when published. -->
-
-For a step‑by‑step tutorial, refer to the blog post. This README focuses on how to run and adapt the code.
+This repository contains the source code used in the SerpApi blog post [Building an API‑only Ruby on Rails Naver News Watchlist](https://example.com/blog/naver-news-watchlist).
+For a step‑by‑step tutorial, refer to the blog post. This README focuses on how to run and adapt the code. <!-- TODO: Update with actual link when published. -->
 
 ---
 
@@ -16,7 +15,6 @@ For a step‑by‑step tutorial, refer to the blog post. This README focuses on 
 - **Mailer + text template** that build the digest email:
   - [app/mailers/daily_digest_mailer.rb](app/mailers/daily_digest_mailer.rb)
   - [app/views/daily_digest_mailer/digest_email.text.erb](app/views/daily_digest_mailer/digest_email.text.erb)
-- No persistence; everything runs in memory and is delivered as an email
 
 For a deeper walkthrough of each component, see the [blog post](https://example.com/blog/naver-news-watchlist). <!-- TODO: Update with actual link when published. -->
 
@@ -101,13 +99,21 @@ The watchlist lives in `app/jobs/daily_watchlist_job.rb` as a `WATCHLIST` consta
 Each entry supports:
 
 - `query` (String, required): keyword(s) passed to Naver
-- `press_names` (Array of Strings): outlet names to filter results by (empty array = no filtering)
-- `max` (Integer): maximum number of items to include for that query
-- `sort_by` (Integer): mapped via `SORT_MAP` (`:relevance`, `:latest`, `:oldest`) in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb)
-- `period` (String): time window key (e.g., `"1d"`, `"1w"`, `"3m"`, etc.), mapped via `PERIOD_MAP` in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb)
-- `device` (String, optional): `"desktop"`, `"mobile"`, or `"tablet"` (passed through to SerpApi)
+- `press_names` (Array of Strings, optional): outlet names to filter results by [omitted, `nil`, or `[]` = no filtering]
+- `max` (Integer, optional): maximum number of items to include for that query [omitted, `nil`, or `Float::INFINITY` = no limit; only limited by `MAX_PAGES`]
+- `sort_by` (Integer, optional): sorting key
+  - options: `0` (relevance; default), `1` (latest), or `2` (oldest)
+  - mapped via `SORT_MAP` in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb)
+- `period` (String, optional): time window key
+  - options: `"all"` (default), `"1h"`, `"2h"`, `"3h"`, `"4h"`, `"5h"`, `"6h"`, `"1d"`, `"1w"`, `"1m"`, `"3m"`, `"6m"`, `"1y"`, or custom date range in the format `"fromYYYYMMDDtoYYYYMMDD"` (e.g., `"from20250801to20250830"`)
+  - mapped via `PERIOD_MAP` in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb)
+- `device` (String, optional): specifies the device type
+  - options: `"desktop"` (default), `"mobile"`, or `"tablet"`
 
-You can adjust `RESULTS_PER_PAGE`, `MAX_PAGES`, and `RECIPIENT_EMAILS` directly in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb) to control pagination and who receives the digest.
+You can also adjust `MAX_PAGES` and `RECIPIENT_EMAILS` directly in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb) to control pagination behavior and where the digest is sent.
+
+> **Note:**  
+> `RESULTS_PER_PAGE` is set to `10` to match Naver’s behavior. Modifying it will cause some results to be skipped.
 
 ---
 
