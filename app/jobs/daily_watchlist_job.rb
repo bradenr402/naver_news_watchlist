@@ -2,11 +2,11 @@ class DailyWatchlistJob < ApplicationJob
   queue_as :default
 
   RECIPIENT_EMAILS = [ "you@example.com", "another@example.com" ].freeze # replace with desired emails
-  RESULTS_PER_PAGE = 10
+  RESULTS_PER_PAGE = 10 # Naver News shows 10 results per page
   MAX_PAGES = 5
 
   SORT_MAP = {
-    relevance: 0,
+    relevance: 0, # default
     latest: 1,
     oldest: 2
   }.freeze
