@@ -12,8 +12,8 @@ class NaverNewsFetcher
     @base_params = DEFAULT_PARAMS.merge(options).merge(query:)
   end
 
-  def self.call(**args)
-    new(**args).call
+  def self.call(page: 1, **args)
+    new(**args).call(page:)
   end
 
   def call(page: 1)
