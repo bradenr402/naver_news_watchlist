@@ -4,7 +4,7 @@ class NaverNewsFetcher
     where: "news",
     sort_by: DailyWatchlistJob::SORT_MAP[:relevance], # Relevance
     period: "1d" # 1 day
-  }
+  }.freeze
 
   attr_reader :base_params
 

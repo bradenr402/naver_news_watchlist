@@ -1,7 +1,7 @@
 class DailyWatchlistJob < ApplicationJob
   queue_as :default
 
-  RECIPIENT_EMAILS = [ "you@example.com", "another@example.com" ] # replace with desired emails
+  RECIPIENT_EMAILS = [ "you@example.com", "another@example.com" ].freeze # replace with desired emails
   RESULTS_PER_PAGE = 10
   MAX_PAGES = 5
 
@@ -9,7 +9,7 @@ class DailyWatchlistJob < ApplicationJob
     relevance: 0,
     latest: 1,
     oldest: 2
-  }
+  }.freeze
 
   PERIOD_MAP = {
     "all" => "all time", # default
@@ -72,7 +72,7 @@ class DailyWatchlistJob < ApplicationJob
       period: "3h",
       device: "mobile" # simulate mobile device results
     }
-  ]
+  ].freeze
 
   def perform
     sections = sections_for_watchlist
