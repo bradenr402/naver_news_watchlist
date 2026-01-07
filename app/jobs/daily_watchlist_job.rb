@@ -131,9 +131,9 @@ class DailyWatchlistJob < ApplicationJob
     page = 1
 
     while selected.size < limit && page <= MAX_PAGES
-      options = item.without(:max, :press_names)
+      options = item.without(:max, :press_names).merge(page:)
 
-      api_response = NaverNewsFetcher.new(**options).call(page:)
+      api_response = NaverNewsFetcher.call(**options)
       ensure_serpapi_success! api_response, options[:query], page
 
       results = api_response[:news_results].to_a

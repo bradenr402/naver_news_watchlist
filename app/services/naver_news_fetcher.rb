@@ -1,12 +1,19 @@
 class NaverNewsFetcher
+  DEFAULT_PARAMS = {
+    engine: "naver",
+    where: "news",
+    sort_by: DailyWatchlistJob::SORT_MAP[:relevance], # Relevance
+    period: "1d" # 1 day
+  }
+
+  attr_reader :base_params
+
   def initialize(query:, **options)
-    @base_params = {
-      engine: "naver",
-      where: "news",
-      query:,
-      sort_by: 0,
-      period: "1d"
-    }.merge(options)
+    @base_params = DEFAULT_PARAMS.merge(options).merge(query:)
+  end
+
+  def self.call(**args)
+    new(**args).call
   end
 
   def call(page: 1)
@@ -24,7 +31,7 @@ class NaverNewsFetcher
       context: {
         source: self.class.name,
         page:,
-        **@base_params.without(:engine, :where)
+        **base_params.without(:engine, :where)
       }.compact
     )
     raise error
@@ -44,6 +51,6 @@ class NaverNewsFetcher
   end
 
   def fetch_news(client, page:)
-    client.search(**@base_params, page:)
+    client.search(**base_params, page:)
   end
 end
