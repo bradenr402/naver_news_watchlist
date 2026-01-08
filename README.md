@@ -1,6 +1,6 @@
-# API‑only Ruby on Rails Naver News Watchlist
+# Building a Naver News Watchlist With Ruby on Rails
 
-This repository contains the source code used in the SerpApi blog post [Building an API‑only Ruby on Rails Naver News Watchlist](https://example.com/blog/naver-news-watchlist).
+This repository contains the source code used in the SerpApi blog post [Building a Naver News Watchlist With Ruby on Rails](https://example.com/blog/naver-news-watchlist).
 For a step‑by‑step tutorial, refer to the blog post. This README focuses on how to run and adapt the code. <!-- TODO: Update with actual link when published. -->
 
 ---
@@ -165,7 +165,7 @@ In production, you would typically write unit tests for the service object, job,
 
 ## Links
 
-- Read the full blog post: [Building an API‑only Ruby on Rails Naver News Watchlist](https://example.com/blog/naver-news-watchlist) <!-- TODO: Update with actual link when published. -->
+- Read the full blog post: [Building a Naver News Watchlist With Ruby on Rails](https://example.com/blog/naver-news-watchlist) <!-- TODO: Update with actual link when published. -->
 - Read the official SerpApi [Naver News Results documentation](https://serpapi.com/naver-news-results)
 - Browse the official SerpApi [Ruby Library](https://github.com/serpapi/serpapi-ruby)
 - Experiment with live queries in the [Naver News Results Playground](https://serpapi.com/playground?engine=naver&where=news)
