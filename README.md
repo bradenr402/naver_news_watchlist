@@ -1,7 +1,7 @@
 # Building a Naver News Watchlist With Ruby on Rails
 
-This repository contains the source code used in the SerpApi blog post [Building a Naver News Watchlist With Ruby on Rails](https://example.com/blog/naver-news-watchlist).
-For a step‑by‑step tutorial, refer to the blog post. This README focuses on how to run and adapt the code. <!-- TODO: Update with actual link when published. -->
+This repository contains the source code used in the SerpApi blog post [Building a Naver News Watchlist With Ruby on Rails](https://serpapi.com/blog/building-a-naver-news-watchlist-with-ruby-on-rails/).
+For a step‑by‑step tutorial, refer to the blog post. This README focuses on how to run and adapt the code.
 
 ---
 
@@ -16,7 +16,7 @@ For a step‑by‑step tutorial, refer to the blog post. This README focuses on 
   - [app/mailers/daily_digest_mailer.rb](app/mailers/daily_digest_mailer.rb)
   - [app/views/daily_digest_mailer/digest_email.text.erb](app/views/daily_digest_mailer/digest_email.text.erb)
 
-For a deeper walkthrough of each component, see the [blog post](https://example.com/blog/naver-news-watchlist). <!-- TODO: Update with actual link when published. -->
+For a deeper walkthrough of each component, see the [blog post](https://serpapi.com/blog/building-a-naver-news-watchlist-with-ruby-on-rails/).
 
 ---
 
@@ -165,7 +165,7 @@ In production, you would typically write unit tests for the service object, job,
 
 ## Links
 
-- Read the full blog post: [Building a Naver News Watchlist With Ruby on Rails](https://example.com/blog/naver-news-watchlist) <!-- TODO: Update with actual link when published. -->
+- Read the full blog post: [Building a Naver News Watchlist With Ruby on Rails](https://serpapi.com/blog/building-a-naver-news-watchlist-with-ruby-on-rails/)
 - Read the official SerpApi [Naver News Results documentation](https://serpapi.com/naver-news-results)
 - Browse the official SerpApi [Ruby Library](https://github.com/serpapi/serpapi-ruby)
 - Experiment with live queries in the [Naver News Results Playground](https://serpapi.com/playground?engine=naver&where=news)
