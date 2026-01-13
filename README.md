@@ -73,10 +73,10 @@ Then configure Action Mailer in `config/environments/production.rb` (and optiona
 ## Email Delivery
 
 - **Development**  
-  Emails are opened in your browser via [`letter_opener`](https://github.com/ryanb/letter_opener) and are already configured in [`config/environments/development.rb`](config/environments/development.rb).
+  Emails are opened in your browser via [letter_opener](https://github.com/ryanb/letter_opener) and are already configured in [config/environments/development.rb](config/environments/development.rb).
 
 - **Production**  
-  SMTP delivery is preconfigured in [`config/environments/production.rb`](config/environments/production.rb). After adding:
+  SMTP delivery is preconfigured in [config/environments/production.rb](config/environments/production.rb). After adding:
 
   ```yml
   smtp:
@@ -87,14 +87,14 @@ Then configure Action Mailer in `config/environments/production.rb` (and optiona
   to credentials, Rails will use Gmail’s SMTP server out of the box.
 
 - **Sender + recipients**
-  - The sender address is defined in [`ApplicationMailer`](app/mailers/application_mailer.rb) and uses `Rails.application.credentials.dig(:smtp, :user_name)`.
-  - Digest recipients are controlled via the `RECIPIENT_EMAILS` constant in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb).
+  - The sender address is defined in [ApplicationMailer](app/mailers/application_mailer.rb) and uses `Rails.application.credentials.dig(:smtp, :user_name)`.
+  - Digest recipients are controlled via the `RECIPIENT_EMAILS` constant in [DailyWatchlistJob](app/jobs/daily_watchlist_job.rb).
 
 ---
 
 ## Watchlist Configuration
 
-The watchlist lives in `app/jobs/daily_watchlist_job.rb` as a `WATCHLIST` constant.
+The watchlist lives in [app/jobs/daily_watchlist_job.rb](app/jobs/daily_watchlist_job.rb) as a `WATCHLIST` constant.
 
 Each entry supports:
 
@@ -103,14 +103,14 @@ Each entry supports:
 - `max` (Integer, optional): maximum number of items to include for that query [omitted, `nil`, or `Float::INFINITY` = no limit; only limited by `MAX_PAGES`]
 - `sort_by` (Integer, optional): sorting key
   - options: `0` (relevance; default), `1` (latest), or `2` (oldest)
-  - mapped via `SORT_MAP` in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb)
+  - mapped via `SORT_MAP` in [DailyWatchlistJob](app/jobs/daily_watchlist_job.rb)
 - `period` (String, optional): time window key
   - options: `"all"` (default), `"1h"`, `"2h"`, `"3h"`, `"4h"`, `"5h"`, `"6h"`, `"1d"`, `"1w"`, `"1m"`, `"3m"`, `"6m"`, `"1y"`, or custom date range in the format `"fromYYYYMMDDtoYYYYMMDD"` (e.g., `"from20250801to20250830"`)
-  - mapped via `PERIOD_MAP` in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb)
+  - mapped via `PERIOD_MAP` in [DailyWatchlistJob](app/jobs/daily_watchlist_job.rb)
 - `device` (String, optional): specifies the device type
   - options: `"desktop"` (default), `"mobile"`, or `"tablet"`
 
-You can also adjust `MAX_PAGES` and `RECIPIENT_EMAILS` directly in [`DailyWatchlistJob`](app/jobs/daily_watchlist_job.rb) to control pagination behavior and where the digest is sent.
+You can also adjust `MAX_PAGES` and `RECIPIENT_EMAILS` directly in [DailyWatchlistJob](app/jobs/daily_watchlist_job.rb) to control pagination behavior and where the digest is sent.
 
 > **Note:**  
 > `RESULTS_PER_PAGE` is set to `10` to match Naver’s behavior. Modifying it will cause some results to be skipped.
@@ -148,7 +148,7 @@ In development—with `letter_opener` configured—the digest email will automat
 
 This repo does not include a scheduler. Use whatever fits your environment, for example:
 
-- Cron + the [`whenever`](https://github.com/javan/whenever) gem to enqueue `DailyWatchlistJob` daily
+- Cron + the [whenever](https://github.com/javan/whenever) gem to enqueue `DailyWatchlistJob` daily
 - Platform scheduler (Heroku Scheduler, Kubernetes CronJob, etc.) that runs:
 
   ```shell
