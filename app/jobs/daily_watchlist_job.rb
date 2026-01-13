@@ -150,8 +150,10 @@ class DailyWatchlistJob < ApplicationJob
         press_name = result.dig(:news_info, :press_name).to_s
         next unless item[:press_names].blank? || press_name.in?(item[:press_names])
 
+        rank = result[:position].to_i + (page - 1) * RESULTS_PER_PAGE # calculate rank across pages
+
         selected << {
-          position: result[:position].to_i + (page - 1) * RESULTS_PER_PAGE,
+          position: rank,
           title: result[:title].to_s,
           snippet: result[:snippet].to_s,
           link:,
